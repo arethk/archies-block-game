@@ -12,7 +12,7 @@ class ArchiesBlockGame {
         // constants
         this.Constants = {};
         this.Constants.default = {};
-        this.Constants.default.rows = 21; // only 20 visible but 23 total rows in the game plus one horizontal border at the bottom
+        this.Constants.default.rows = 20; // only 20 visible but 23 total rows in the game plus one horizontal border at the bottom
         this.Constants.default.columns = 12; // 10 playable area plus vertical borders
         this.Constants.default.timeout = 500;
         this.Constants.layout = {};
@@ -23,12 +23,12 @@ class ArchiesBlockGame {
         this.Constants.layout.flip = "flip";
         this.Constants.layout.hide = "hide";
         this.Constants.gridValues = {};
-        this.Constants.gridValues.border = "B";
+        this.Constants.gridValues.border = "B"; //TODO: change or delete
         this.Constants.gridValues.empty = 0;
         this.Constants.gridCssClass = {};
         this.Constants.gridCssClass.border = "border";
         this.Constants.gridCssClass.empty = "";
-        this.Constants.directions = {};
+        this.Constants.directions = {}; // TODO: needed?
         this.Constants.directions.up = "up";
         this.Constants.directions.down = "down";
         this.Constants.directions.left = "left";
@@ -43,18 +43,18 @@ class ArchiesBlockGame {
         // action
         this.interval = null;
         this.buildHTML();
+        this.reset();
     }
 
     reset() {
         this.clearTimer();
-        this.hideAllPopups();
         this.score = 0;
         this.direction = this.Constants.directions.up;
         this.nextDirection = this.direction; // to stop ui bug when changing direction in an invalid way caused by the timer delay
         this.buildStartingGrid();
-        this.placeRandomEgg();
-        this.drawGrid();
-        this.startGame();
+        this.printGrid();
+        // this.drawGrid();
+        // this.startGame();
     }
 
     startGame() {
@@ -241,19 +241,11 @@ class ArchiesBlockGame {
     }
 
     buildStartingGrid() {
-        const headLocationRow = this.rows - 3;
-        const headLocationColumn = Math.floor(this.columns / 2);
         this.grid = [];
-        for (let i = 0; i < this.rows; i++) {
+        for (let i = 0; i < this.Constants.default.rows + 2; i++) {
             const row = [];
-            for (let j = 0; j < this.columns; j++) {
-                if ([0, this.rows - 1].includes(i) || [0, this.columns - 1].includes(j)) {
-                    row.push(this.Constants.gridValues.border);
-                } else if (i === headLocationRow && j === headLocationColumn) {
-                    row.push(this.Constants.gridValues.head);
-                } else {
-                    row.push(this.Constants.gridValues.empty);
-                }
+            for (let j = 0; j < this.Constants.default.columns - 2; j++) {
+                row.push(this.Constants.gridValues.empty);
             }
             this.grid.push(row);
         }
@@ -264,7 +256,7 @@ class ArchiesBlockGame {
             throw new Error("Invalid container");
         }
         // set css grid rows and columns
-        this.container.style.gridTemplateRows = `minmax(50px, 2fr) repeat(${this.Constants.default.rows - 1}, minmax(10px, 1fr)) minmax(50px, 1fr) minmax(150px, 4fr)`;
+        this.container.style.gridTemplateRows = `minmax(50px, 2fr) repeat(${this.Constants.default.rows}, minmax(10px, 1fr)) minmax(50px, 1fr) minmax(150px, 4fr)`;
         this.container.style.gridTemplateColumns = `repeat(${this.Constants.default.columns}, minmax(30px, 1fr))`;
 
         // create header area
@@ -281,7 +273,7 @@ class ArchiesBlockGame {
         this.container.style.gridTemplateAreas = `"${headerGridNameList.join(" ")}"`;
 
         // create game area
-        for (let i = 0; i < this.Constants.default.rows - 1; i++) {
+        for (let i = 0; i < this.Constants.default.rows; i++) {
             const gameGridNameList = [];
             let cellClass = null;
             let cellGridName = null;
@@ -330,6 +322,7 @@ class ArchiesBlockGame {
         playPauseButton.innerText = "►";
         playPauseButton.onclick = () => {
             // TODO: add play/pause functionality
+            // TODO: use constants
             if (playPauseButton.innerText === "►") {
                 playPauseButton.innerText = "| |";
             } else {
