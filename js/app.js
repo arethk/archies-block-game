@@ -12,9 +12,17 @@ class ArchiesBlockGame {
         // constants
         this.Constants = {};
         this.Constants.default = {};
-        this.Constants.default.rows = 20; // only 20 visible but 23 total rows in the game plus one horizontal border at the bottom
-        this.Constants.default.columns = 12; // 10 playable area plus vertical borders
+        this.Constants.default.rows = 24; // there are 24 rows but only 20 are visible
+        this.Constants.default.nonVisibleRows = 4;
+        this.Constants.default.columns = 10; // there are 10 columns but the ui needs to draw a left and right border also
+        this.Constants.default.columnBorders = 2;
         this.Constants.default.timeout = 500;
+        this.Constants.labels = {};
+        this.Constants.labels.turnLeft = "Turn Left";
+        this.Constants.labels.turnRight = "Turn Right";
+        this.Constants.labels.moveLeft = "<";
+        this.Constants.labels.moveRight = ">";
+        this.Constants.labels.moveDown = "^"; // its flipped with css
         this.Constants.layout = {};
         this.Constants.layout.header = "header";
         this.Constants.layout.score = "score";
@@ -23,51 +31,57 @@ class ArchiesBlockGame {
         this.Constants.layout.flip = "flip";
         this.Constants.layout.hide = "hide";
         this.Constants.gridValues = {};
-        this.Constants.gridValues.border = "B"; //TODO: change or delete
         this.Constants.gridValues.empty = 0;
         this.Constants.gridCssClass = {};
         this.Constants.gridCssClass.border = "border";
+        this.Constants.gridCssClass.setBlock = "set-block";
         this.Constants.gridCssClass.empty = "";
-        this.Constants.directions = {}; // TODO: needed?
-        this.Constants.directions.up = "up";
-        this.Constants.directions.down = "down";
-        this.Constants.directions.left = "left";
-        this.Constants.directions.right = "right";
-        this.Constants.buttons = {};
-        this.Constants.buttons.up = "^";
-        this.Constants.buttons.down = "^";
-        this.Constants.buttons.left = "<";
-        this.Constants.buttons.right = ">";
-
 
         // action
         this.interval = null;
+        this.blocks = new RandomItemSelector([
+            new SquareBlock(),
+            new LineBlock(),
+            new SBlock(),
+            new ZBlock(),
+            new LBlock(),
+            new JBlock(),
+            new TBlock()
+        ], true);
+        this.colors = new RandomItemSelector([
+            "red",
+            "green",
+            "blue",
+            "purple",
+            "orange",
+            "pink"
+        ], false);
         this.buildHTML();
         this.reset();
     }
 
     reset() {
         this.clearTimer();
+        this.count = 0;
         this.score = 0;
-        this.direction = this.Constants.directions.up;
-        this.nextDirection = this.direction; // to stop ui bug when changing direction in an invalid way caused by the timer delay
         this.buildStartingGrid();
         this.printGrid();
-        // this.drawGrid();
+        this.setNewBlock();
+        this.printGrid();
+        this.drawGrid();
         // this.startGame();
+    }
+
+    setNewBlock() {
+        const block = this.blocks.getRandomItem().getRowsDefinition(++this.count);
+        this.grid[10] = block[0];
+        this.grid[11] = block[1];
+        this.grid[12] = block[2];
+        this.grid[13] = block[3];
     }
 
     startGame() {
         this.interval = setInterval(() => {
-            // handle direction change, stops weird timer bug
-            if (
-                (this.direction === this.Constants.directions.up && this.nextDirection !== this.Constants.directions.down) ||
-                (this.direction === this.Constants.directions.down && this.nextDirection !== this.Constants.directions.up) ||
-                (this.direction === this.Constants.directions.left && this.nextDirection !== this.Constants.directions.right) ||
-                (this.direction === this.Constants.directions.right && this.nextDirection !== this.Constants.directions.left)
-            ) {
-                this.direction = this.nextDirection;
-            }
             // find head
             const headLocation = this.findGridItemByValue(this.Constants.gridValues.head);
             const newHeadLocation = this.calculateNewPosition(headLocation.row, headLocation.column);
@@ -154,82 +168,32 @@ class ArchiesBlockGame {
 
     drawGrid() {
         const gridCssClasses = [
-            //this.Constants.gridCssClass.border,
-            //this.Constants.gridCssClass.empty,
-            this.Constants.gridCssClass.headUp,
-            this.Constants.gridCssClass.headDown,
-            this.Constants.gridCssClass.headLeft,
-            this.Constants.gridCssClass.headRight,
-            this.Constants.gridCssClass.tailUp,
-            this.Constants.gridCssClass.tailDown,
-            this.Constants.gridCssClass.tailLeft,
-            this.Constants.gridCssClass.tailRight,
-            this.Constants.gridCssClass.body,
-            this.Constants.gridCssClass.egg,
-            this.Constants.gridCssClass.collision
+            // TODO: remove colors
+            this.Constants.gridCssClass.setBlock
         ];
+        const color = this.colors.getRandomItem();
         for (let i = 0; i < this.grid.length; i++) {
+            // skip top 4 rows
+            if ([0, 1, 2, 3].includes(i)) { //TODO: use spread operator with rows constant here
+                continue;
+            }
             const row = this.grid[i];
             for (let j = 0; j < row.length; j++) {
                 const item = row[j];
-                const cell = document.querySelector(`.${ArtysSnakeGame.generateCellName(i, j)}`);
+                const cell = document.querySelector(`.${ArchiesBlockGame.generateCellName(i, j)}`);
                 gridCssClasses.forEach(c => {
                     cell.classList.remove(c);
                 });
                 switch (item) {
-                    case this.Constants.gridValues.border:
-                        cell.classList.add(this.Constants.gridCssClass.border);
-                        break;
                     case this.Constants.gridValues.empty:
-                        //cell.classList.add(this.Constants.gridCssClass.empty);
-                        break;
-                    case this.Constants.gridValues.head:
-                        switch (this.direction) {
-                            case this.Constants.directions.up:
-                                cell.classList.add(this.Constants.gridCssClass.headUp);
-                                break;
-                            case this.Constants.directions.down:
-                                cell.classList.add(this.Constants.gridCssClass.headDown);
-                                break;
-                            case this.Constants.directions.left:
-                                cell.classList.add(this.Constants.gridCssClass.headLeft);
-                                break;
-                            case this.Constants.directions.right:
-                                cell.classList.add(this.Constants.gridCssClass.headRight);
-                                break;
-                            default:
-                                console.log(`Invalid direction ${this.direction}`);
-                                break;
-                        }
-                        break;
-                    case this.Constants.gridValues.egg:
-                        cell.classList.add(this.Constants.gridCssClass.egg);
-                        break;
-                    case this.Constants.gridValues.collision:
-                        cell.classList.add(this.Constants.gridCssClass.collision);
+                        // don't do anything if empty
                         break;
                     default:
                         if (Number.isInteger(item)) {
-                            const bodyLocations = this.getBodyLocations();
-                            const beforeItem = bodyLocations[bodyLocations.length - 2];
-                            const tail = bodyLocations[bodyLocations.length - 1];
-                            if (item === tail.value) {
-                                // handle tail
-                                if (beforeItem.column === tail.column) {
-                                    if (beforeItem.row < tail.row) {
-                                        cell.classList.add(this.Constants.gridCssClass.tailDown);
-                                    } else {
-                                        cell.classList.add(this.Constants.gridCssClass.tailUp);
-                                    }
-                                } else {
-                                    if (beforeItem.column < tail.column) {
-                                        cell.classList.add(this.Constants.gridCssClass.tailRight);
-                                    } else {
-                                        cell.classList.add(this.Constants.gridCssClass.tailLeft);
-                                    }
-                                }
+                            if (item === this.count) {
+                                cell.classList.add(color);
                             } else {
-                                cell.classList.add(this.Constants.gridCssClass.body);
+                                cell.classList.add(this.Constants.gridCssClass.setBlock);
                             }
                         } else {
                             console.log(`Invalid grid value ${item}`);
@@ -242,9 +206,9 @@ class ArchiesBlockGame {
 
     buildStartingGrid() {
         this.grid = [];
-        for (let i = 0; i < this.Constants.default.rows + 2; i++) {
+        for (let i = 0; i < this.Constants.default.rows; i++) {
             const row = [];
-            for (let j = 0; j < this.Constants.default.columns - 2; j++) {
+            for (let j = 0; j < this.Constants.default.columns; j++) {
                 row.push(this.Constants.gridValues.empty);
             }
             this.grid.push(row);
@@ -256,8 +220,8 @@ class ArchiesBlockGame {
             throw new Error("Invalid container");
         }
         // set css grid rows and columns
-        this.container.style.gridTemplateRows = `minmax(50px, 2fr) repeat(${this.Constants.default.rows}, minmax(10px, 1fr)) minmax(50px, 1fr) minmax(150px, 4fr)`;
-        this.container.style.gridTemplateColumns = `repeat(${this.Constants.default.columns}, minmax(30px, 1fr))`;
+        this.container.style.gridTemplateRows = `minmax(50px, 2fr) repeat(${this.Constants.default.rows - this.Constants.default.nonVisibleRows}, minmax(10px, 1fr)) minmax(50px, 1fr) minmax(150px, 4fr)`;
+        this.container.style.gridTemplateColumns = `repeat(${this.Constants.default.columns + this.Constants.default.columnBorders}, minmax(30px, 1fr))`;
 
         // create header area
         const headerDiv = document.createElement("div");
@@ -267,17 +231,17 @@ class ArchiesBlockGame {
 
         // create header grid area
         const headerGridNameList = [];
-        for (let i = 0; i < this.Constants.default.columns; i++) {
+        for (let i = 0; i < this.Constants.default.columns + this.Constants.default.columnBorders; i++) {
             headerGridNameList.push(this.Constants.layout.header);
         }
         this.container.style.gridTemplateAreas = `"${headerGridNameList.join(" ")}"`;
 
         // create game area
-        for (let i = 0; i < this.Constants.default.rows; i++) {
+        for (let i = this.Constants.default.nonVisibleRows; i < this.Constants.default.rows; i++) {
             const gameGridNameList = [];
             let cellClass = null;
             let cellGridName = null;
-            for (let j = 0; j < this.Constants.default.columns; j++) {
+            for (let j = 0; j < this.Constants.default.columns + this.Constants.default.columnBorders; j++) {
                 switch (j) {
                     case 0:
                     case 11:
@@ -302,11 +266,16 @@ class ArchiesBlockGame {
         const scoreDiv = document.createElement("div");
         scoreDiv.classList.add(this.Constants.layout.score);
         scoreDiv.style.gridArea = this.Constants.layout.score;
+        scoreDiv.innerHTML = "Score:&nbsp;";
+        const scoreSpan = document.createElement("span");
+        scoreSpan.id = "score";
+        scoreSpan.innerText = "0";
+        scoreDiv.appendChild(scoreSpan);
         this.container.appendChild(scoreDiv);
 
         // create score grid area
         const scoreGridNameList = [];
-        for (let i = 0; i < this.Constants.default.columns; i++) {
+        for (let i = 0; i < this.Constants.default.columns + this.Constants.default.columnBorders; i++) {
             scoreGridNameList.push(this.Constants.layout.score);
         }
         this.container.style.gridTemplateAreas += `"${scoreGridNameList.join(" ")}"`;
@@ -317,61 +286,56 @@ class ArchiesBlockGame {
         footerDiv.style.gridArea = this.Constants.layout.footer;
 
         // create control buttons
-        const playPauseButton = document.createElement("button");
-        playPauseButton.id = this.Constants.directions.up;
-        playPauseButton.innerText = "►";
-        playPauseButton.onclick = () => {
-            // TODO: add play/pause functionality
-            // TODO: use constants
-            if (playPauseButton.innerText === "►") {
-                playPauseButton.innerText = "| |";
-            } else {
-                playPauseButton.innerText = "►";
-            }
-
-        };
-        const leftButton = document.createElement("button");
-        leftButton.id = this.Constants.directions.left;
-        leftButton.innerText = this.Constants.buttons.left;
-        leftButton.onclick = () => { app.nextDirection = app.Constants.directions.left; };
-        const rightButton = document.createElement("button");
-        rightButton.id = this.Constants.directions.right;
-        rightButton.innerText = this.Constants.buttons.right;
-        rightButton.onclick = () => { app.nextDirection = app.Constants.directions.right; };
+        const turnLeftButton = document.createElement("button");
+        turnLeftButton.innerText = this.Constants.labels.turnLeft;
+        turnLeftButton.onclick = () => { console.log(this.Constants.labels.turnLeft); };
+        const turnRightButton = document.createElement("button");
+        turnRightButton.innerText = this.Constants.labels.turnRight;
+        turnRightButton.onclick = () => { console.log(this.Constants.labels.turnRight); };
+        const moveLeftButton = document.createElement("button");
+        moveLeftButton.innerText = this.Constants.labels.moveLeft;
+        moveLeftButton.onclick = () => { console.log(this.Constants.labels.moveLeft); };
+        const moveRightButton = document.createElement("button");
+        moveRightButton.innerText = this.Constants.labels.moveRight;
+        moveRightButton.onclick = () => { console.log(this.Constants.labels.moveRight); };
         const downButton = document.createElement("button");
-        downButton.id = this.Constants.directions.down;
+        downButton.innerText = this.Constants.labels.moveDown;
+        downButton.onclick = () => { console.log(this.Constants.labels.moveDown); };
         downButton.classList.add(this.Constants.layout.flip);
-        downButton.innerText = this.Constants.buttons.down;
-        downButton.onclick = () => { app.nextDirection = app.Constants.directions.down; };
-        const leftRightDiv = document.createElement("div");
-        leftRightDiv.classList.add(this.Constants.layout.leftrightcontainer);
-        leftRightDiv.appendChild(leftButton);
-        leftRightDiv.appendChild(rightButton);
-        footerDiv.appendChild(playPauseButton);
-        footerDiv.appendChild(leftRightDiv);
+        const turnLeftRightDiv = document.createElement("div");
+        turnLeftRightDiv.classList.add(this.Constants.layout.leftrightcontainer);
+        turnLeftRightDiv.appendChild(turnLeftButton);
+        turnLeftRightDiv.appendChild(turnRightButton);
+        const moveLeftRightDiv = document.createElement("div");
+        moveLeftRightDiv.classList.add(this.Constants.layout.leftrightcontainer);
+        moveLeftRightDiv.appendChild(moveLeftButton);
+        moveLeftRightDiv.appendChild(moveRightButton);
+        footerDiv.appendChild(turnLeftRightDiv);
+        footerDiv.appendChild(moveLeftRightDiv);
         footerDiv.appendChild(downButton);
         this.container.appendChild(footerDiv);
 
         // create header grid area
         const footerGridNameList = [];
-        for (let i = 0; i < this.Constants.default.columns; i++) {
+        for (let i = 0; i < this.Constants.default.columns + this.Constants.default.columnBorders; i++) {
             footerGridNameList.push(this.Constants.layout.footer);
         }
         this.container.style.gridTemplateAreas += `"${footerGridNameList.join(" ")}"`;
 
+        // TODO: wire this up
         window.onkeydown = (event) => {
             switch (event.code) {
                 case "ArrowUp":
-                    app.nextDirection = app.Constants.directions.up;
+                    console.log(event.code);
                     break;
                 case "ArrowDown":
-                    app.nextDirection = app.Constants.directions.down;
+                    console.log(event.code);
                     break;
                 case "ArrowLeft":
-                    app.nextDirection = app.Constants.directions.left;
+                    console.log(event.code);
                     break;
                 case "ArrowRight":
-                    app.nextDirection = app.Constants.directions.right;
+                    console.log(event.code);
                     break;
                 default:
                     break;

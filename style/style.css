@@ -14,7 +14,7 @@ body {
 
 .header {
     display: flex;
-    font-size: 6.0vh;
+    font-size: 5.0vh;
     font-weight: bold;
     justify-content: center;
     align-items: center;
@@ -28,7 +28,14 @@ body {
 }
 
 .score {
+    display: flex;
+    font-size: 4.0vh;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
     background-color: black;
+    color: grey;
 }
 
 .footer {
