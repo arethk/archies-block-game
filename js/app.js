@@ -50,13 +50,13 @@ class ArchiesBlockGame {
         this.interval = null;
         const colorSelector = new RandomItemSelector(this.Constants.blocks.colors, false);
         this.blocks = new RandomItemSelector([
-            new SquareBlock(colorSelector),
+            // new SquareBlock(colorSelector),
             new LineBlock(colorSelector),
-            new SBlock(colorSelector),
-            new ZBlock(colorSelector),
-            new LBlock(colorSelector),
-            new JBlock(colorSelector),
-            new TBlock(colorSelector)
+            // new SBlock(colorSelector),
+            // new ZBlock(colorSelector),
+            // new LBlock(colorSelector),
+            // new JBlock(colorSelector),
+            // new TBlock(colorSelector)
         ], true);
         this.buildHTML();
         this.reset();
@@ -296,7 +296,7 @@ class ArchiesBlockGame {
         turnLeftButton.onclick = () => { console.log(this.Constants.labels.turnLeft); };
         const turnRightButton = document.createElement("button");
         turnRightButton.innerText = this.Constants.labels.turnRight;
-        turnRightButton.onclick = () => { console.log(this.Constants.labels.turnRight); };
+        turnRightButton.onclick = () => { app.turnBlockRight(); };
         const moveLeftButton = document.createElement("button");
         moveLeftButton.innerText = this.Constants.labels.moveLeft;
         moveLeftButton.onclick = () => { app.moveBlockLeft(); };
@@ -331,7 +331,7 @@ class ArchiesBlockGame {
         window.onkeydown = (event) => {
             switch (event.code) {
                 case "ArrowUp":
-                    console.log(event.code);
+                    app.turnBlockRight();
                     break;
                 case "ArrowDown":
                     console.log(event.code);
@@ -368,6 +368,138 @@ class ArchiesBlockGame {
         return items;
     }
 
+    removeItemsFromGrid(items) {
+        for (let i = 0; i < items.length; i++) {
+            const pos = items[i];
+            this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
+        }
+    }
+
+    turnBlockRight() {
+        const blockPositions = this.findGridItemsByValue(this.count);
+        this.printGrid();
+        console.log(blockPositions);
+        switch (this.block.constructor) {
+            case SquareBlock:
+                // do nothing
+                break;
+            case LineBlock:
+                if (blockPositions[0].column === blockPositions[1].column) {
+                    console.log("vertical");
+                    const piece = blockPositions[2];
+                    if (piece.column > 1 && piece.column < 8) {
+                        console.log("can");
+                        if (
+                            this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty &&
+                            this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
+                            this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty
+                        ) {
+                            console.log("no blocks");
+                            this.removeItemsFromGrid(blockPositions);
+                            this.grid[piece.row][piece.column - 2] = this.count;
+                            this.grid[piece.row][piece.column - 1] = this.count;
+                            this.grid[piece.row][piece.column] = this.count;
+                            this.grid[piece.row][piece.column + 1] = this.count;
+                            this.drawGrid();
+                            this.printGrid();
+                        } else {
+                            console.log("blocks");
+                        }
+                    } else {
+                        if (piece.column < 2) {
+                            console.log("move right bro");
+                            if (piece.column === 0) {
+                                console.log("all the way left");
+                                if (
+                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column + 2] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column + 3] === this.Constants.gridValues.empty
+                                ) {
+                                    console.log("no blocks");
+                                    this.removeItemsFromGrid(blockPositions);
+                                    this.grid[piece.row][piece.column] = this.count;
+                                    this.grid[piece.row][piece.column + 1] = this.count;
+                                    this.grid[piece.row][piece.column + 2] = this.count;
+                                    this.grid[piece.row][piece.column + 3] = this.count;
+                                    this.drawGrid();
+                                    this.printGrid();
+                                } else {
+                                    console.log("blocks");
+                                }
+                            } else if (piece.column === 1) {
+                                console.log("all the way left + 1 over");
+                                if (
+                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column + 2] === this.Constants.gridValues.empty
+                                ) {
+                                    console.log("no blocks");
+                                    this.removeItemsFromGrid(blockPositions);
+                                    this.grid[piece.row][piece.column - 1] = this.count;
+                                    this.grid[piece.row][piece.column] = this.count;
+                                    this.grid[piece.row][piece.column + 1] = this.count;
+                                    this.grid[piece.row][piece.column + 2] = this.count;
+                                    this.drawGrid();
+                                    this.printGrid();
+                                } else {
+                                    console.log("blocks");
+                                }
+                            } else {
+                                console.log("Invalid Case");
+                            }
+                        } else {
+                            console.log("move left bro");
+                            if (piece.column === 9) {
+                                console.log("all the way right");
+                                if (
+                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column - 3] === this.Constants.gridValues.empty
+                                ) {
+                                    console.log("no blocks");
+                                    this.removeItemsFromGrid(blockPositions);
+                                    this.grid[piece.row][piece.column] = this.count;
+                                    this.grid[piece.row][piece.column - 1] = this.count;
+                                    this.grid[piece.row][piece.column - 2] = this.count;
+                                    this.grid[piece.row][piece.column - 3] = this.count;
+                                    this.drawGrid();
+                                    this.printGrid();
+                                } else {
+                                    console.log("blocks");
+                                }
+                            } else if (piece.column === 8) {
+                                console.log("all the way right - 1 over");
+                                if (
+                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
+                                    this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty
+                                ) {
+                                    console.log("no blocks");
+                                    this.removeItemsFromGrid(blockPositions);
+                                    this.grid[piece.row][piece.column + 1] = this.count;
+                                    this.grid[piece.row][piece.column] = this.count;
+                                    this.grid[piece.row][piece.column - 1] = this.count;
+                                    this.grid[piece.row][piece.column - 2] = this.count;
+                                    this.drawGrid();
+                                    this.printGrid();
+                                } else {
+                                    console.log("blocks");
+                                }
+                            } else {
+                                console.log("Invalid Case");
+                            }
+                        }
+                    }
+                } else {
+                    console.log("horizontal");
+                }
+                break;
+            default:
+                console.log(`Invalid block ${this.block.constructor.name}`);
+                break;
+        }
+    }
+
     moveBlockLeft() {
         const blockPositions = this.findGridItemsByValue(this.count);
         let canMove = true;
@@ -379,10 +511,7 @@ class ArchiesBlockGame {
             }
         }
         if (canMove === true) {
-            for (let i = 0; i < blockPositions.length; i++) {
-                const pos = blockPositions[i];
-                this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
-            }
+            this.removeItemsFromGrid(blockPositions);
             for (let i = 0; i < blockPositions.length; i++) {
                 const pos = blockPositions[i];
                 this.grid[pos.row][pos.column - 1] = this.count;
@@ -402,10 +531,7 @@ class ArchiesBlockGame {
             }
         }
         if (canMove === true) {
-            for (let i = 0; i < blockPositions.length; i++) {
-                const pos = blockPositions[i];
-                this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
-            }
+            this.removeItemsFromGrid(blockPositions);
             for (let i = 0; i < blockPositions.length; i++) {
                 const pos = blockPositions[i];
                 this.grid[pos.row][pos.column + 1] = this.count;
