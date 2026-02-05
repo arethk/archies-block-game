@@ -168,13 +168,16 @@ class ArchiesBlockGame {
 
     drawGrid() {
         const gridCssClasses = [
-            // TODO: remove colors
             this.Constants.gridCssClass.setBlock
         ];
+        // add colors
+        this.colors.getItems().forEach(element => {
+            gridCssClasses.push(element);
+        });
         const color = this.colors.getRandomItem();
         for (let i = 0; i < this.grid.length; i++) {
             // skip top 4 rows
-            if ([0, 1, 2, 3].includes(i)) { //TODO: use spread operator with rows constant here
+            if ([0, 1, 2, 3].includes(i)) {
                 continue;
             }
             const row = this.grid[i];
@@ -294,10 +297,10 @@ class ArchiesBlockGame {
         turnRightButton.onclick = () => { console.log(this.Constants.labels.turnRight); };
         const moveLeftButton = document.createElement("button");
         moveLeftButton.innerText = this.Constants.labels.moveLeft;
-        moveLeftButton.onclick = () => { console.log(this.Constants.labels.moveLeft); };
+        moveLeftButton.onclick = () => { app.moveBlockLeft(); };
         const moveRightButton = document.createElement("button");
         moveRightButton.innerText = this.Constants.labels.moveRight;
-        moveRightButton.onclick = () => { console.log(this.Constants.labels.moveRight); };
+        moveRightButton.onclick = () => { app.moveBlockRight(); };
         const downButton = document.createElement("button");
         downButton.innerText = this.Constants.labels.moveDown;
         downButton.onclick = () => { console.log(this.Constants.labels.moveDown); };
@@ -332,14 +335,80 @@ class ArchiesBlockGame {
                     console.log(event.code);
                     break;
                 case "ArrowLeft":
-                    console.log(event.code);
+                    app.moveBlockLeft();
                     break;
                 case "ArrowRight":
-                    console.log(event.code);
+                    app.moveBlockRight();
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+    findGridItemsByValue(value) {
+        const items = [];
+        for (let i = 0; i < this.grid.length; i++) {
+            const row = this.grid[i];
+            for (let j = 0; j < row.length; j++) {
+                const item = row[j];
+                if (item === value) {
+                    items.push({
+                        row: i,
+                        column: j
+                    });
+                }
+            }
+        }
+        if (items.length === 0) {
+            console.log(`Invalid grid item value ${value}`);
+        }
+        return items;
+    }
+
+    moveBlockLeft() {
+        const blockPositions = this.findGridItemsByValue(this.count);
+        let canMove = true;
+        for (let i = 0; i < blockPositions.length; i++) {
+            const pos = blockPositions[i];
+            if (pos.column - 1 === -1) {
+                canMove = false;
+                break;
+            }
+        }
+        if (canMove === true) {
+            for (let i = 0; i < blockPositions.length; i++) {
+                const pos = blockPositions[i];
+                this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
+            }
+            for (let i = 0; i < blockPositions.length; i++) {
+                const pos = blockPositions[i];
+                this.grid[pos.row][pos.column - 1] = this.count;
+            }
+            this.drawGrid();
+        }
+    }
+
+    moveBlockRight() {
+        const blockPositions = this.findGridItemsByValue(this.count);
+        let canMove = true;
+        for (let i = 0; i < blockPositions.length; i++) {
+            const pos = blockPositions[i];
+            if (pos.column + 1 === this.Constants.default.columns) {
+                canMove = false;
+                break;
+            }
+        }
+        if (canMove === true) {
+            for (let i = 0; i < blockPositions.length; i++) {
+                const pos = blockPositions[i];
+                this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
+            }
+            for (let i = 0; i < blockPositions.length; i++) {
+                const pos = blockPositions[i];
+                this.grid[pos.row][pos.column + 1] = this.count;
+            }
+            this.drawGrid();
         }
     }
 
