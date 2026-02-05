@@ -1,21 +1,29 @@
 class AbstractBlockShape {
-    constructor() {
+    constructor(colors) {
         if (new.target === AbstractBlockShape) {
             throw new Error("Cannot instantiate AbstractBlockShape");
         }
+        if (Array.isArray(colors) === false || colors.length === 0) {
+            throw new Error("Colors must be an array with at least one string");
+        }
+        this.color = new RandomItemSelector(colors, false).getRandomItem();
     }
 
-    getRowsDefinition(id) {
+    getColor() {
+        return this.color;
+    }
+
+    getPlacement(id) {
         throw new Error("getGrid() must be overridden by a subclass");
     }
 }
 
 class SquareBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,11 +34,11 @@ class SquareBlock extends AbstractBlockShape {
 }
 
 class LineBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -41,11 +49,11 @@ class LineBlock extends AbstractBlockShape {
 }
 
 class SBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -56,11 +64,11 @@ class SBlock extends AbstractBlockShape {
 }
 
 class ZBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -71,11 +79,11 @@ class ZBlock extends AbstractBlockShape {
 }
 
 class LBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -86,11 +94,11 @@ class LBlock extends AbstractBlockShape {
 }
 
 class JBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -101,11 +109,11 @@ class JBlock extends AbstractBlockShape {
 }
 
 class TBlock extends AbstractBlockShape {
-    constructor() {
-        super();
+    constructor(colors) {
+        super(colors);
     }
 
-    getRowsDefinition(id) {
+    getPlacement(id) {
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

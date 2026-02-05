@@ -8,10 +8,6 @@ class RandomItemSelector {
         this.last = null;
     }
 
-    getItems() {
-        return this.items;
-    }
-
     getRandomItem() {
         this.shuffle();
         const selection = this.items[0];

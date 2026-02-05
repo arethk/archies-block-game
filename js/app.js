@@ -36,26 +36,27 @@ class ArchiesBlockGame {
         this.Constants.gridCssClass.border = "border";
         this.Constants.gridCssClass.setBlock = "set-block";
         this.Constants.gridCssClass.empty = "";
-
-        // action
-        this.interval = null;
-        this.blocks = new RandomItemSelector([
-            new SquareBlock(),
-            new LineBlock(),
-            new SBlock(),
-            new ZBlock(),
-            new LBlock(),
-            new JBlock(),
-            new TBlock()
-        ], true);
-        this.colors = new RandomItemSelector([
+        this.Constants.blocks = {};
+        this.Constants.blocks.colors = [
             "red",
             "green",
             "blue",
             "purple",
             "orange",
             "pink"
-        ], false);
+        ];
+
+        // action
+        this.interval = null;
+        this.blocks = new RandomItemSelector([
+            new SquareBlock(this.Constants.blocks.colors),
+            new LineBlock(this.Constants.blocks.colors),
+            new SBlock(this.Constants.blocks.colors),
+            new ZBlock(this.Constants.blocks.colors),
+            new LBlock(this.Constants.blocks.colors),
+            new JBlock(this.Constants.blocks.colors),
+            new TBlock(this.Constants.blocks.colors)
+        ], true);
         this.buildHTML();
         this.reset();
     }
@@ -73,11 +74,12 @@ class ArchiesBlockGame {
     }
 
     setNewBlock() {
-        const block = this.blocks.getRandomItem().getRowsDefinition(++this.count);
-        this.grid[10] = block[0];
-        this.grid[11] = block[1];
-        this.grid[12] = block[2];
-        this.grid[13] = block[3];
+        this.block = this.blocks.getRandomItem();
+        const placement = this.block.getPlacement(++this.count);
+        this.grid[10] = placement[0];
+        this.grid[11] = placement[1];
+        this.grid[12] = placement[2];
+        this.grid[13] = placement[3];
     }
 
     startGame() {
@@ -171,10 +173,9 @@ class ArchiesBlockGame {
             this.Constants.gridCssClass.setBlock
         ];
         // add colors
-        this.colors.getItems().forEach(element => {
+        this.Constants.blocks.colors.forEach(element => {
             gridCssClasses.push(element);
         });
-        const color = this.colors.getRandomItem();
         for (let i = 0; i < this.grid.length; i++) {
             // skip top 4 rows
             if ([0, 1, 2, 3].includes(i)) {
@@ -194,7 +195,7 @@ class ArchiesBlockGame {
                     default:
                         if (Number.isInteger(item)) {
                             if (item === this.count) {
-                                cell.classList.add(color);
+                                cell.classList.add(this.block.getColor());
                             } else {
                                 cell.classList.add(this.Constants.gridCssClass.setBlock);
                             }
