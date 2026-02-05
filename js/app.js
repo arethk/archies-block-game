@@ -48,14 +48,15 @@ class ArchiesBlockGame {
 
         // action
         this.interval = null;
+        const colorSelector = new RandomItemSelector(this.Constants.blocks.colors, false);
         this.blocks = new RandomItemSelector([
-            new SquareBlock(this.Constants.blocks.colors),
-            new LineBlock(this.Constants.blocks.colors),
-            new SBlock(this.Constants.blocks.colors),
-            new ZBlock(this.Constants.blocks.colors),
-            new LBlock(this.Constants.blocks.colors),
-            new JBlock(this.Constants.blocks.colors),
-            new TBlock(this.Constants.blocks.colors)
+            new SquareBlock(colorSelector),
+            new LineBlock(colorSelector),
+            new SBlock(colorSelector),
+            new ZBlock(colorSelector),
+            new LBlock(colorSelector),
+            new JBlock(colorSelector),
+            new TBlock(colorSelector)
         ], true);
         this.buildHTML();
         this.reset();

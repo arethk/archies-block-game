@@ -1,12 +1,12 @@
 class AbstractBlockShape {
-    constructor(colors) {
+    constructor(colorSelector) {
         if (new.target === AbstractBlockShape) {
             throw new Error("Cannot instantiate AbstractBlockShape");
         }
-        if (Array.isArray(colors) === false || colors.length === 0) {
-            throw new Error("Colors must be an array with at least one string");
+        if (colorSelector instanceof RandomItemSelector === false) {
+            throw new Error("Invlid RandomItemSelector");
         }
-        this.color = new RandomItemSelector(colors, false).getRandomItem();
+        this.color = colorSelector.getRandomItem();
     }
 
     getColor() {
@@ -19,8 +19,8 @@ class AbstractBlockShape {
 }
 
 class SquareBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -34,8 +34,8 @@ class SquareBlock extends AbstractBlockShape {
 }
 
 class LineBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -49,8 +49,8 @@ class LineBlock extends AbstractBlockShape {
 }
 
 class SBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -64,8 +64,8 @@ class SBlock extends AbstractBlockShape {
 }
 
 class ZBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -79,8 +79,8 @@ class ZBlock extends AbstractBlockShape {
 }
 
 class LBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -94,8 +94,8 @@ class LBlock extends AbstractBlockShape {
 }
 
 class JBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
@@ -109,8 +109,8 @@ class JBlock extends AbstractBlockShape {
 }
 
 class TBlock extends AbstractBlockShape {
-    constructor(colors) {
-        super(colors);
+    constructor(colorSelector) {
+        super(colorSelector);
     }
 
     getPlacement(id) {
