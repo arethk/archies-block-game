@@ -51,8 +51,8 @@ class ArchiesBlockGame {
         const colorSelector = new RandomItemSelector(this.Constants.blocks.colors, false);
         this.blocks = new RandomItemSelector([
             // new SquareBlock(colorSelector),
-            new LineBlock(colorSelector),
-            // new SBlock(colorSelector),
+            // new LineBlock(colorSelector),
+            new SBlock(colorSelector),
             // new ZBlock(colorSelector),
             // new LBlock(colorSelector),
             // new JBlock(colorSelector),
@@ -423,6 +423,7 @@ class ArchiesBlockGame {
                 // do nothing
                 break;
             case LineBlock:
+            case SBlock:
                 this.turnBlockRight();
                 break;
             default:
@@ -542,6 +543,40 @@ class ArchiesBlockGame {
                             { row: piece.row, column: piece.column },
                             { row: piece.row - 1, column: piece.column },
                             { row: piece.row - 2, column: piece.column }
+                        ]
+                    );
+                }
+                break;
+            case SBlock:
+                const piece = blockPositions[3];
+                if (blockPositions[0].row === blockPositions[1].row) {
+                    console.log("hor");
+                    this.attemptTurn(
+                        [
+                            { row: piece.row - 1, column: piece.column - 1 },
+                            { row: piece.row - 2, column: piece.column - 1 }
+                        ],
+                        blockPositions,
+                        [
+                            { row: piece.row, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row - 1, column: piece.column - 1 },
+                            { row: piece.row - 2, column: piece.column - 1 }
+                        ]
+                    );
+                } else {
+                    console.log("ver");
+                    this.attemptTurn(
+                        [
+                            { row: piece.row, column: piece.column - 1 },
+                            { row: piece.row - 1, column: piece.column + 1 }
+                        ],
+                        blockPositions,
+                        [
+                            { row: piece.row, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row, column: piece.column - 1 },
+                            { row: piece.row - 1, column: piece.column + 1 }
                         ]
                     );
                 }
