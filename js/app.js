@@ -52,8 +52,8 @@ class ArchiesBlockGame {
         this.blocks = new RandomItemSelector([
             // new SquareBlock(colorSelector),
             // new LineBlock(colorSelector),
-            new SBlock(colorSelector),
-            // new ZBlock(colorSelector),
+            // new SBlock(colorSelector),
+            new ZBlock(colorSelector),
             // new LBlock(colorSelector),
             // new JBlock(colorSelector),
             // new TBlock(colorSelector)
@@ -424,6 +424,7 @@ class ArchiesBlockGame {
                 break;
             case LineBlock:
             case SBlock:
+            case ZBlock:
                 this.turnBlockRight();
                 break;
             default:
@@ -548,9 +549,8 @@ class ArchiesBlockGame {
                 }
                 break;
             case SBlock:
-                const piece = blockPositions[3];
                 if (blockPositions[0].row === blockPositions[1].row) {
-                    console.log("hor");
+                    const piece = blockPositions[3];
                     this.attemptTurn(
                         [
                             { row: piece.row - 1, column: piece.column - 1 },
@@ -565,20 +565,85 @@ class ArchiesBlockGame {
                         ]
                     );
                 } else {
-                    console.log("ver");
+                    const piece = blockPositions[3];
+                    if (piece.column < 9) {
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row - 1, column: piece.column + 1 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row, column: piece.column },
+                                { row: piece.row - 1, column: piece.column },
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row - 1, column: piece.column + 1 }
+                            ]
+                        );
+                    } else {
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row, column: piece.column - 2 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row, column: piece.column - 2 },
+                                { row: piece.row - 1, column: piece.column - 1 },
+                                { row: piece.row - 1, column: piece.column }
+                            ]
+                        );
+                    }
+                }
+                break;
+            case ZBlock:
+                if (blockPositions[0].row === blockPositions[1].row) {
+                    const piece = blockPositions[2];
                     this.attemptTurn(
                         [
-                            { row: piece.row, column: piece.column - 1 },
-                            { row: piece.row - 1, column: piece.column + 1 }
+                            { row: piece.row + 1, column: piece.column + 1 },
+                            { row: piece.row + 2, column: piece.column + 1 }
                         ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
                             { row: piece.row - 1, column: piece.column },
-                            { row: piece.row, column: piece.column - 1 },
-                            { row: piece.row - 1, column: piece.column + 1 }
+                            { row: piece.row - 1, column: piece.column + 1 },
+                            { row: piece.row - 2, column: piece.column + 1 }
                         ]
                     );
+                } else {
+                    const piece = blockPositions[3];
+                    if (piece.column > 0) {
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row - 1, column: piece.column - 1 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row, column: piece.column },
+                                { row: piece.row - 1, column: piece.column },
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row - 1, column: piece.column - 1 }
+                            ]
+                        );
+                    } else {
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row, column: piece.column + 2 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row - 1, column: piece.column },
+                                { row: piece.row - 1, column: piece.column + 1 },
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row, column: piece.column + 2 }
+                            ]
+                        );
+                    }
                 }
                 break;
             default:
