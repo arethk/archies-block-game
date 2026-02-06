@@ -397,6 +397,27 @@ class ArchiesBlockGame {
         }
     }
 
+    attemptTurn(checks, blockPositions, moves) {
+        if (Array.isArray(checks) === false) {
+            throw new Error("Checks must be an array");
+        }
+        if (Array.isArray(blockPositions) === false) {
+            throw new Error("BlockPositions must be an array");
+        }
+        if (Array.isArray(moves) === false) {
+            throw new Error("Moves must be an array");
+        }
+        if (this.isItemsEmpty(checks) === true) {
+            console.log("no blocks");
+            this.removeItemsFromGrid(blockPositions);
+            this.updateItems(moves, this.count);
+            this.drawGrid();
+            this.printGrid();
+        } else {
+            console.log("blocks");
+        }
+    }
+
     turnBlockRight() {
         const blockPositions = this.findGridItemsByValue(this.count);
         this.printGrid();
@@ -411,55 +432,55 @@ class ArchiesBlockGame {
                     const piece = blockPositions[2];
                     if (piece.column > 1 && piece.column < 8) {
                         console.log("can");
-                        if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 2 }, { row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column + 1 }]) === true) {
-                            console.log("no blocks");
-                            this.removeItemsFromGrid(blockPositions);
-                            this.updateItems([
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column - 2 },
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row, column: piece.column + 1 }
+                            ],
+                            blockPositions,
+                            [
                                 { row: piece.row, column: piece.column - 2 },
                                 { row: piece.row, column: piece.column - 1 },
                                 { row: piece.row, column: piece.column },
                                 { row: piece.row, column: piece.column + 1 }
-                            ], this.count);
-                            this.drawGrid();
-                            this.printGrid();
-                        } else {
-                            console.log("blocks");
-                        }
+                            ]
+                        );
                     } else {
                         if (piece.column < 2) {
                             console.log("move right bro");
                             if (piece.column === 0) {
                                 console.log("all the way left");
-                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column + 2 }, { row: piece.row, column: piece.column + 3 }]) === true) {
-                                    console.log("no blocks");
-                                    this.removeItemsFromGrid(blockPositions);
-                                    this.updateItems([
+                                this.attemptTurn(
+                                    [
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column + 2 },
+                                        { row: piece.row, column: piece.column + 3 }
+                                    ],
+                                    blockPositions,
+                                    [
                                         { row: piece.row, column: piece.column },
                                         { row: piece.row, column: piece.column + 1 },
                                         { row: piece.row, column: piece.column + 2 },
                                         { row: piece.row, column: piece.column + 3 }
-                                    ], this.count);
-                                    this.drawGrid();
-                                    this.printGrid();
-                                } else {
-                                    console.log("blocks");
-                                }
+                                    ]
+                                );
                             } else if (piece.column === 1) {
                                 console.log("all the way left + 1 over");
-                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column + 2 }]) === true) {
-                                    console.log("no blocks");
-                                    this.removeItemsFromGrid(blockPositions);
-                                    this.updateItems([
+                                this.attemptTurn(
+                                    [
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column + 2 }
+                                    ],
+                                    blockPositions,
+                                    [
                                         { row: piece.row, column: piece.column - 1 },
                                         { row: piece.row, column: piece.column },
                                         { row: piece.row, column: piece.column + 1 },
                                         { row: piece.row, column: piece.column + 2 }
-                                    ], this.count);
-                                    this.drawGrid();
-                                    this.printGrid();
-                                } else {
-                                    console.log("blocks");
-                                }
+                                    ]
+                                );
                             } else {
                                 console.log("Invalid Case");
                             }
@@ -467,36 +488,36 @@ class ArchiesBlockGame {
                             console.log("move left bro");
                             if (piece.column === 9) {
                                 console.log("all the way right");
-                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column - 2 }, { row: piece.row, column: piece.column - 3 }]) === true) {
-                                    console.log("no blocks");
-                                    this.removeItemsFromGrid(blockPositions);
-                                    this.updateItems([
+                                this.attemptTurn(
+                                    [
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column - 2 },
+                                        { row: piece.row, column: piece.column - 3 }
+                                    ],
+                                    blockPositions,
+                                    [
                                         { row: piece.row, column: piece.column },
                                         { row: piece.row, column: piece.column - 1 },
                                         { row: piece.row, column: piece.column - 2 },
                                         { row: piece.row, column: piece.column - 3 }
-                                    ], this.count);
-                                    this.drawGrid();
-                                    this.printGrid();
-                                } else {
-                                    console.log("blocks");
-                                }
+                                    ]
+                                );
                             } else if (piece.column === 8) {
                                 console.log("all the way right - 1 over");
-                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column - 2 }]) === true) {
-                                    console.log("no blocks");
-                                    this.removeItemsFromGrid(blockPositions);
-                                    this.updateItems([
+                                this.attemptTurn(
+                                    [
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column - 2 }
+                                    ],
+                                    blockPositions,
+                                    [
                                         { row: piece.row, column: piece.column + 1 },
                                         { row: piece.row, column: piece.column },
                                         { row: piece.row, column: piece.column - 1 },
                                         { row: piece.row, column: piece.column - 2 }
-                                    ], this.count);
-                                    this.drawGrid();
-                                    this.printGrid();
-                                } else {
-                                    console.log("blocks");
-                                }
+                                    ]
+                                );
                             } else {
                                 console.log("Invalid Case");
                             }
