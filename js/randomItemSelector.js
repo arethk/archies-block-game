@@ -1,7 +1,7 @@
 class RandomItemSelector {
     constructor(items, allowRepeats) {
-        if (Array.isArray(items) === false || items.length === 0) {
-            throw new Error("Items must be an array with at least 1 item");
+        if (Array.isArray(items) === false || items.length < 2) {
+            //throw new Error("Items must be an array with at least 2 items"); // TODO: reenable
         }
         this.items = items;
         this.allowRepeats = allowRepeats === true;

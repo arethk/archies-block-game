@@ -369,9 +369,31 @@ class ArchiesBlockGame {
     }
 
     removeItemsFromGrid(items) {
+        this.updateItems(items, this.Constants.gridValues.empty);
+    }
+
+    isItemsEmpty(items) {
+        if (Array.isArray(items) === false) {
+            throw new Error("Items must be an array");
+        }
+        let result = true;
         for (let i = 0; i < items.length; i++) {
-            const pos = items[i];
-            this.grid[pos.row][pos.column] = this.Constants.gridValues.empty;
+            const item = items[i];
+            if (this.grid[item.row][item.column] !== this.Constants.gridValues.empty) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    updateItems(items, value) {
+        if (Array.isArray(items) === false) {
+            throw new Error("Items must be an array");
+        }
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            this.grid[item.row][item.column] = value;
         }
     }
 
@@ -389,17 +411,15 @@ class ArchiesBlockGame {
                     const piece = blockPositions[2];
                     if (piece.column > 1 && piece.column < 8) {
                         console.log("can");
-                        if (
-                            this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty &&
-                            this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
-                            this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty
-                        ) {
+                        if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 2 }, { row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column + 1 }]) === true) {
                             console.log("no blocks");
                             this.removeItemsFromGrid(blockPositions);
-                            this.grid[piece.row][piece.column - 2] = this.count;
-                            this.grid[piece.row][piece.column - 1] = this.count;
-                            this.grid[piece.row][piece.column] = this.count;
-                            this.grid[piece.row][piece.column + 1] = this.count;
+                            this.updateItems([
+                                { row: piece.row, column: piece.column - 2 },
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row, column: piece.column },
+                                { row: piece.row, column: piece.column + 1 }
+                            ], this.count);
                             this.drawGrid();
                             this.printGrid();
                         } else {
@@ -410,17 +430,15 @@ class ArchiesBlockGame {
                             console.log("move right bro");
                             if (piece.column === 0) {
                                 console.log("all the way left");
-                                if (
-                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column + 2] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column + 3] === this.Constants.gridValues.empty
-                                ) {
+                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column + 2 }, { row: piece.row, column: piece.column + 3 }]) === true) {
                                     console.log("no blocks");
                                     this.removeItemsFromGrid(blockPositions);
-                                    this.grid[piece.row][piece.column] = this.count;
-                                    this.grid[piece.row][piece.column + 1] = this.count;
-                                    this.grid[piece.row][piece.column + 2] = this.count;
-                                    this.grid[piece.row][piece.column + 3] = this.count;
+                                    this.updateItems([
+                                        { row: piece.row, column: piece.column },
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column + 2 },
+                                        { row: piece.row, column: piece.column + 3 }
+                                    ], this.count);
                                     this.drawGrid();
                                     this.printGrid();
                                 } else {
@@ -428,17 +446,15 @@ class ArchiesBlockGame {
                                 }
                             } else if (piece.column === 1) {
                                 console.log("all the way left + 1 over");
-                                if (
-                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column + 2] === this.Constants.gridValues.empty
-                                ) {
+                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column + 2 }]) === true) {
                                     console.log("no blocks");
                                     this.removeItemsFromGrid(blockPositions);
-                                    this.grid[piece.row][piece.column - 1] = this.count;
-                                    this.grid[piece.row][piece.column] = this.count;
-                                    this.grid[piece.row][piece.column + 1] = this.count;
-                                    this.grid[piece.row][piece.column + 2] = this.count;
+                                    this.updateItems([
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column },
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column + 2 }
+                                    ], this.count);
                                     this.drawGrid();
                                     this.printGrid();
                                 } else {
@@ -451,17 +467,15 @@ class ArchiesBlockGame {
                             console.log("move left bro");
                             if (piece.column === 9) {
                                 console.log("all the way right");
-                                if (
-                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column - 3] === this.Constants.gridValues.empty
-                                ) {
+                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column - 2 }, { row: piece.row, column: piece.column - 3 }]) === true) {
                                     console.log("no blocks");
                                     this.removeItemsFromGrid(blockPositions);
-                                    this.grid[piece.row][piece.column] = this.count;
-                                    this.grid[piece.row][piece.column - 1] = this.count;
-                                    this.grid[piece.row][piece.column - 2] = this.count;
-                                    this.grid[piece.row][piece.column - 3] = this.count;
+                                    this.updateItems([
+                                        { row: piece.row, column: piece.column },
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column - 2 },
+                                        { row: piece.row, column: piece.column - 3 }
+                                    ], this.count);
                                     this.drawGrid();
                                     this.printGrid();
                                 } else {
@@ -469,17 +483,15 @@ class ArchiesBlockGame {
                                 }
                             } else if (piece.column === 8) {
                                 console.log("all the way right - 1 over");
-                                if (
-                                    this.grid[piece.row][piece.column + 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column - 1] === this.Constants.gridValues.empty &&
-                                    this.grid[piece.row][piece.column - 2] === this.Constants.gridValues.empty
-                                ) {
+                                if (this.isItemsEmpty([{ row: piece.row, column: piece.column + 1 }, { row: piece.row, column: piece.column - 1 }, { row: piece.row, column: piece.column - 2 }]) === true) {
                                     console.log("no blocks");
                                     this.removeItemsFromGrid(blockPositions);
-                                    this.grid[piece.row][piece.column + 1] = this.count;
-                                    this.grid[piece.row][piece.column] = this.count;
-                                    this.grid[piece.row][piece.column - 1] = this.count;
-                                    this.grid[piece.row][piece.column - 2] = this.count;
+                                    this.updateItems([
+                                        { row: piece.row, column: piece.column + 1 },
+                                        { row: piece.row, column: piece.column },
+                                        { row: piece.row, column: piece.column - 1 },
+                                        { row: piece.row, column: piece.column - 2 }
+                                    ], this.count);
                                     this.drawGrid();
                                     this.printGrid();
                                 } else {

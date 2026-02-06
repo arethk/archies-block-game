@@ -4,7 +4,7 @@ class AbstractBlockShape {
             throw new Error("Cannot instantiate AbstractBlockShape");
         }
         if (colorSelector instanceof RandomItemSelector === false) {
-            throw new Error("Invlid RandomItemSelector");
+            throw new Error("Invalid RandomItemSelector");
         }
         this.color = colorSelector.getRandomItem();
     }
