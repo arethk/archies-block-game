@@ -293,7 +293,7 @@ class ArchiesBlockGame {
         // create control buttons
         const turnLeftButton = document.createElement("button");
         turnLeftButton.innerText = this.Constants.labels.turnLeft;
-        turnLeftButton.onclick = () => { console.log(this.Constants.labels.turnLeft); };
+        turnLeftButton.onclick = () => { app.turnBlockLeft(); };
         const turnRightButton = document.createElement("button");
         turnRightButton.innerText = this.Constants.labels.turnRight;
         turnRightButton.onclick = () => { app.turnBlockRight(); };
@@ -408,13 +408,26 @@ class ArchiesBlockGame {
             throw new Error("Moves must be an array");
         }
         if (this.isItemsEmpty(checks) === true) {
-            console.log("no blocks");
             this.removeItemsFromGrid(blockPositions);
             this.updateItems(moves, this.count);
             this.drawGrid();
             this.printGrid();
         } else {
-            console.log("blocks");
+            console.log("Cannot turn due to a blockage");
+        }
+    }
+
+    turnBlockLeft() {
+        switch (this.block.constructor) {
+            case SquareBlock:
+                // do nothing
+                break;
+            case LineBlock:
+                this.turnBlockRight();
+                break;
+            default:
+                console.log(`Invalid block ${this.block.constructor.name}`);
+                break;
         }
     }
 
@@ -428,10 +441,8 @@ class ArchiesBlockGame {
                 break;
             case LineBlock:
                 if (blockPositions[0].column === blockPositions[1].column) {
-                    console.log("vertical");
                     const piece = blockPositions[2];
                     if (piece.column > 1 && piece.column < 8) {
-                        console.log("can");
                         this.attemptTurn(
                             [
                                 { row: piece.row, column: piece.column - 2 },
@@ -448,9 +459,7 @@ class ArchiesBlockGame {
                         );
                     } else {
                         if (piece.column < 2) {
-                            console.log("move right bro");
                             if (piece.column === 0) {
-                                console.log("all the way left");
                                 this.attemptTurn(
                                     [
                                         { row: piece.row, column: piece.column + 1 },
@@ -466,7 +475,6 @@ class ArchiesBlockGame {
                                     ]
                                 );
                             } else if (piece.column === 1) {
-                                console.log("all the way left + 1 over");
                                 this.attemptTurn(
                                     [
                                         { row: piece.row, column: piece.column - 1 },
@@ -485,9 +493,7 @@ class ArchiesBlockGame {
                                 console.log("Invalid Case");
                             }
                         } else {
-                            console.log("move left bro");
                             if (piece.column === 9) {
-                                console.log("all the way right");
                                 this.attemptTurn(
                                     [
                                         { row: piece.row, column: piece.column - 1 },
@@ -503,7 +509,6 @@ class ArchiesBlockGame {
                                     ]
                                 );
                             } else if (piece.column === 8) {
-                                console.log("all the way right - 1 over");
                                 this.attemptTurn(
                                     [
                                         { row: piece.row, column: piece.column + 1 },
@@ -524,7 +529,21 @@ class ArchiesBlockGame {
                         }
                     }
                 } else {
-                    console.log("horizontal");
+                    const piece = blockPositions[2];
+                    this.attemptTurn(
+                        [
+                            { row: piece.row + 1, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row - 2, column: piece.column }
+                        ],
+                        blockPositions,
+                        [
+                            { row: piece.row + 1, column: piece.column },
+                            { row: piece.row, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row - 2, column: piece.column }
+                        ]
+                    );
                 }
                 break;
             default:
