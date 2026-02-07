@@ -427,6 +427,107 @@ class ArchiesBlockGame {
             case ZBlock:
                 this.turnBlockRight();
                 break;
+            case LBlock:
+                const blockPositions = this.findGridItemsByValue(this.count);
+                if (blockPositions[0].column === blockPositions[1].column && blockPositions[0].column === blockPositions[2].column && blockPositions[3].column === (blockPositions[0].column + 1)) {
+                    if (blockPositions[0].column > 0) {
+                        const piece = blockPositions[3];
+                        this.attemptTurn(
+                            [
+                                { row: piece.row - 1, column: piece.column },
+                                { row: piece.row, column: piece.column - 2 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row, column: piece.column },
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row - 1, column: piece.column },
+                                { row: piece.row, column: piece.column - 2 }
+                            ]
+                        );
+                    } else {
+                        const piece = blockPositions[3];
+                        this.attemptTurn(
+                            [
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row - 1, column: piece.column + 1 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row, column: piece.column },
+                                { row: piece.row, column: piece.column - 1 },
+                                { row: piece.row, column: piece.column + 1 },
+                                { row: piece.row - 1, column: piece.column + 1 }
+                            ]
+                        );
+                    }
+                } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
+                    const piece = blockPositions[3];
+                    this.attemptTurn(
+                        [
+                            { row: piece.row - 2, column: piece.column },
+                            { row: piece.row - 2, column: piece.column - 1 }
+                        ],
+                        blockPositions,
+                        [
+                            { row: piece.row, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row - 2, column: piece.column },
+                            { row: piece.row - 2, column: piece.column - 1 }
+                        ]
+                    );
+                } else if (blockPositions[1].column === blockPositions[2].column && blockPositions[1].column === blockPositions[3].column && blockPositions[3].column === (blockPositions[0].column + 1)) {
+                    if (blockPositions[3].column < 9) {
+                        const piece = blockPositions[0];
+                        this.attemptTurn(
+                            [
+                                { row: piece.row + 1, column: piece.column },
+                                { row: piece.row + 2, column: piece.column },
+                                { row: piece.row + 1, column: piece.column + 2 }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row + 1, column: piece.column + 1 },
+                                { row: piece.row + 1, column: piece.column },
+                                { row: piece.row + 2, column: piece.column },
+                                { row: piece.row + 1, column: piece.column + 2 }
+                            ]
+                        );
+                    } else {
+                        const piece = blockPositions[0];
+                        this.attemptTurn(
+                            [
+                                { row: piece.row + 2, column: piece.column - 1 },
+                                { row: piece.row + 1, column: piece.column - 1 },
+                                { row: piece.row + 1, column: piece.column }
+                            ],
+                            blockPositions,
+                            [
+                                { row: piece.row + 1, column: piece.column + 1 },
+                                { row: piece.row + 2, column: piece.column - 1 },
+                                { row: piece.row + 1, column: piece.column - 1 },
+                                { row: piece.row + 1, column: piece.column }
+                            ]
+                        );
+                    }
+                } else if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
+                    const piece = blockPositions[3];
+                    this.attemptTurn(
+                        [
+                            { row: piece.row, column: piece.column + 1 },
+                            { row: piece.row - 2, column: piece.column }
+                        ],
+                        blockPositions,
+                        [
+                            { row: piece.row, column: piece.column },
+                            { row: piece.row - 1, column: piece.column },
+                            { row: piece.row, column: piece.column + 1 },
+                            { row: piece.row - 2, column: piece.column }
+                        ]
+                    );
+                }
+
+                break;
             default:
                 console.log(`Invalid block ${this.block.constructor.name}`);
                 break;
