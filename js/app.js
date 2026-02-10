@@ -54,10 +54,10 @@ class ArchiesBlockGame {
             // new SquareBlock(colorSelector),
             // new LineBlock(colorSelector),
             // new SBlock(colorSelector),
-            new ZBlock(colorSelector),
+            // new ZBlock(colorSelector),
             // new LBlock(colorSelector),
             // new JBlock(colorSelector),
-            // new TBlock(colorSelector)
+            new TBlock(colorSelector)
         ], true);
         this.buildHTML();
         this.reset();
@@ -413,23 +413,21 @@ class ArchiesBlockGame {
         }
     }
 
-    attemptTurn(checks, blockPositions, moves) {
-        if (Array.isArray(checks) === false) {
-            throw new Error("Checks must be an array");
-        }
+    attemptTurn(blockPositions, moves) {
         if (Array.isArray(blockPositions) === false) {
             throw new Error("BlockPositions must be an array");
         }
         if (Array.isArray(moves) === false) {
             throw new Error("Moves must be an array");
         }
-        if (this.isItemsEmpty(checks) === true) {
-            this.removeItemsFromGrid(blockPositions);
+        this.removeItemsFromGrid(blockPositions);
+        if (this.isItemsEmpty(moves) === true) {
             this.updateItems(moves, this.count);
             this.drawGrid();
             this.printGrid();
         } else {
             console.log("Cannot turn due to a blockage");
+            this.updateItems(blockPositions, this.count);
         }
     }
 
@@ -451,10 +449,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column > 0) {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row - 1, column: piece.column },
-                                { row: piece.row, column: piece.column - 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -466,10 +460,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -482,10 +472,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[3];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 2, column: piece.column },
-                            { row: piece.row - 2, column: piece.column - 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -498,11 +484,6 @@ class ArchiesBlockGame {
                     if (blockPositions[3].column < 9) {
                         const piece = blockPositions[0];
                         this.attemptTurn(
-                            [
-                                { row: piece.row + 1, column: piece.column },
-                                { row: piece.row + 2, column: piece.column },
-                                { row: piece.row + 1, column: piece.column + 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row + 1, column: piece.column + 1 },
@@ -514,11 +495,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[0];
                         this.attemptTurn(
-                            [
-                                { row: piece.row + 2, column: piece.column - 1 },
-                                { row: piece.row + 1, column: piece.column - 1 },
-                                { row: piece.row + 1, column: piece.column }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row + 1, column: piece.column + 1 },
@@ -531,10 +507,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[3];
                     this.attemptTurn(
-                        [
-                            { row: piece.row, column: piece.column + 1 },
-                            { row: piece.row - 2, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -550,10 +522,6 @@ class ArchiesBlockGame {
                     if (blockPositions[2].column > 0) {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row - 1, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column - 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -565,11 +533,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row - 1, column: piece.column },
@@ -582,10 +545,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[1];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column },
-                            { row: piece.row + 1, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -598,10 +557,6 @@ class ArchiesBlockGame {
                     if (blockPositions[1].column < 9) {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row, column: piece.column + 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -613,11 +568,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[3];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column - 1 },
-                                { row: piece.row, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -630,10 +580,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[1];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column + 1 },
-                            { row: piece.row - 2, column: piece.column + 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -648,9 +594,6 @@ class ArchiesBlockGame {
                 if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[1];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -663,9 +606,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column > 0) {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -677,10 +617,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -693,9 +629,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[1].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[2];
                     this.attemptTurn(
-                        [
-                            { row: piece.row + 1, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -708,9 +641,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column < 9) {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -722,10 +652,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row + 1, column: piece.column },
-                                { row: piece.row, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -756,11 +682,6 @@ class ArchiesBlockGame {
                     const piece = blockPositions[2];
                     if (piece.column > 1 && piece.column < 8) {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 2 },
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column - 2 },
@@ -773,11 +694,6 @@ class ArchiesBlockGame {
                         if (piece.column < 2) {
                             if (piece.column === 0) {
                                 this.attemptTurn(
-                                    [
-                                        { row: piece.row, column: piece.column + 1 },
-                                        { row: piece.row, column: piece.column + 2 },
-                                        { row: piece.row, column: piece.column + 3 }
-                                    ],
                                     blockPositions,
                                     [
                                         { row: piece.row, column: piece.column },
@@ -788,11 +704,6 @@ class ArchiesBlockGame {
                                 );
                             } else if (piece.column === 1) {
                                 this.attemptTurn(
-                                    [
-                                        { row: piece.row, column: piece.column - 1 },
-                                        { row: piece.row, column: piece.column + 1 },
-                                        { row: piece.row, column: piece.column + 2 }
-                                    ],
                                     blockPositions,
                                     [
                                         { row: piece.row, column: piece.column - 1 },
@@ -807,11 +718,6 @@ class ArchiesBlockGame {
                         } else {
                             if (piece.column === 9) {
                                 this.attemptTurn(
-                                    [
-                                        { row: piece.row, column: piece.column - 1 },
-                                        { row: piece.row, column: piece.column - 2 },
-                                        { row: piece.row, column: piece.column - 3 }
-                                    ],
                                     blockPositions,
                                     [
                                         { row: piece.row, column: piece.column },
@@ -822,11 +728,6 @@ class ArchiesBlockGame {
                                 );
                             } else if (piece.column === 8) {
                                 this.attemptTurn(
-                                    [
-                                        { row: piece.row, column: piece.column + 1 },
-                                        { row: piece.row, column: piece.column - 1 },
-                                        { row: piece.row, column: piece.column - 2 }
-                                    ],
                                     blockPositions,
                                     [
                                         { row: piece.row, column: piece.column + 1 },
@@ -843,11 +744,6 @@ class ArchiesBlockGame {
                 } else {
                     const piece = blockPositions[2];
                     this.attemptTurn(
-                        [
-                            { row: piece.row + 1, column: piece.column },
-                            { row: piece.row - 1, column: piece.column },
-                            { row: piece.row - 2, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row + 1, column: piece.column },
@@ -862,10 +758,6 @@ class ArchiesBlockGame {
                 if (blockPositions[0].row === blockPositions[1].row) {
                     const piece = blockPositions[3];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column - 1 },
-                            { row: piece.row - 2, column: piece.column - 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -878,10 +770,6 @@ class ArchiesBlockGame {
                     const piece = blockPositions[3];
                     if (piece.column < 9) {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -892,10 +780,6 @@ class ArchiesBlockGame {
                         );
                     } else {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row, column: piece.column - 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column - 1 },
@@ -911,10 +795,6 @@ class ArchiesBlockGame {
                 if (blockPositions[0].row === blockPositions[1].row) {
                     const piece = blockPositions[2];
                     this.attemptTurn(
-                        [
-                            { row: piece.row + 1, column: piece.column + 1 },
-                            { row: piece.row + 2, column: piece.column + 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -927,10 +807,6 @@ class ArchiesBlockGame {
                     const piece = blockPositions[3];
                     if (piece.column > 0) {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -941,10 +817,6 @@ class ArchiesBlockGame {
                         );
                     } else {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row, column: piece.column + 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row - 1, column: piece.column },
@@ -961,10 +833,6 @@ class ArchiesBlockGame {
                     const piece = blockPositions[2];
                     if (piece.column < 8) {
                         this.attemptTurn(
-                            [
-                                { row: piece.row - 1, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column + 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -975,11 +843,6 @@ class ArchiesBlockGame {
                         );
                     } else {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row - 1, column: piece.column },
@@ -992,11 +855,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[3];
                     this.attemptTurn(
-                        [
-                            { row: piece.row, column: piece.column + 1 },
-                            { row: piece.row - 2, column: piece.column + 1 },
-                            { row: piece.row - 2, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column + 1 },
@@ -1009,10 +867,6 @@ class ArchiesBlockGame {
                     const piece = blockPositions[3];
                     if (piece.column > 1) {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row, column: piece.column - 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1023,11 +877,6 @@ class ArchiesBlockGame {
                         );
                     } else {
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row - 1, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1040,10 +889,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[1].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[2];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column },
-                            { row: piece.row - 2, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -1059,10 +904,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column < 9) {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row - 1, column: piece.column },
-                                { row: piece.row, column: piece.column + 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1074,10 +915,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1090,10 +927,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[1].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[1];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 2, column: piece.column },
-                            { row: piece.row - 2, column: piece.column + 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -1106,11 +939,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column < 8) {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row + 2, column: piece.column + 1 },
-                                { row: piece.row + 1, column: piece.column + 1 },
-                                { row: piece.row + 1, column: piece.column }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row + 1, column: piece.column - 1 },
@@ -1122,11 +950,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row + 1, column: piece.column },
-                                { row: piece.row + 2, column: piece.column },
-                                { row: piece.row + 1, column: piece.column - 2 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row + 1, column: piece.column - 1 },
@@ -1139,11 +962,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[3];
                     this.attemptTurn(
-                        [
-                            { row: piece.row, column: piece.column - 2 },
-                            { row: piece.row, column: piece.column - 1 },
-                            { row: piece.row - 2, column: piece.column - 1 }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row - 1, column: piece.column - 1 },
@@ -1158,9 +976,6 @@ class ArchiesBlockGame {
                 if (blockPositions[0].row === blockPositions[1].row && blockPositions[0].row === blockPositions[2].row && blockPositions[3].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[1];
                     this.attemptTurn(
-                        [
-                            { row: piece.row - 1, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -1173,9 +988,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column < 9) {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1187,10 +999,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 },
-                                { row: piece.row - 1, column: piece.column }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1203,9 +1011,6 @@ class ArchiesBlockGame {
                 } else if (blockPositions[1].row === blockPositions[2].row && blockPositions[1].row === blockPositions[3].row && blockPositions[1].row === (blockPositions[0].row + 1)) {
                     const piece = blockPositions[2];
                     this.attemptTurn(
-                        [
-                            { row: piece.row + 1, column: piece.column }
-                        ],
                         blockPositions,
                         [
                             { row: piece.row, column: piece.column },
@@ -1218,9 +1023,6 @@ class ArchiesBlockGame {
                     if (blockPositions[0].column > 0) {
                         const piece = blockPositions[1];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column - 1 }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1232,10 +1034,6 @@ class ArchiesBlockGame {
                     } else {
                         const piece = blockPositions[2];
                         this.attemptTurn(
-                            [
-                                { row: piece.row, column: piece.column + 1 },
-                                { row: piece.row + 1, column: piece.column }
-                            ],
                             blockPositions,
                             [
                                 { row: piece.row, column: piece.column },
@@ -1255,46 +1053,28 @@ class ArchiesBlockGame {
 
     moveBlockLeft() {
         const blockPositions = this.findGridItemsByValue(this.count);
-        let canMove = true;
+        const moves = [];
         for (let i = 0; i < blockPositions.length; i++) {
             const pos = blockPositions[i];
-            if (pos.column - 1 === -1) {
-                canMove = false;
-                break;
-            }
+            moves.push({
+                row: pos.row,
+                column: pos.column - 1
+            });
         }
-        // TODO: add check for blocks
-        // remove blockPositions, then see if each item in block position column - 1
-        // is equal to empty constant. Special case for when on the wall?
-        if (canMove === true) {
-            this.removeItemsFromGrid(blockPositions);
-            for (let i = 0; i < blockPositions.length; i++) {
-                const pos = blockPositions[i];
-                this.grid[pos.row][pos.column - 1] = this.count;
-            }
-            this.drawGrid();
-        }
+        this.attemptTurn(blockPositions, moves);
     }
 
     moveBlockRight() {
         const blockPositions = this.findGridItemsByValue(this.count);
-        let canMove = true;
+        const moves = [];
         for (let i = 0; i < blockPositions.length; i++) {
             const pos = blockPositions[i];
-            if (pos.column + 1 === this.Constants.default.columns) {
-                canMove = false;
-                break;
-            }
+            moves.push({
+                row: pos.row,
+                column: pos.column + 1
+            });
         }
-        // TODO: see note in moveBlockLeft()
-        if (canMove === true) {
-            this.removeItemsFromGrid(blockPositions);
-            for (let i = 0; i < blockPositions.length; i++) {
-                const pos = blockPositions[i];
-                this.grid[pos.row][pos.column + 1] = this.count;
-            }
-            this.drawGrid();
-        }
+        this.attemptTurn(blockPositions, moves);
     }
 
     clearTimer() {
