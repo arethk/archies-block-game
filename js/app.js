@@ -1,4 +1,3 @@
-const debug = true;
 class ArchiesBlockGame {
     constructor(container) {
         // singelton
@@ -26,6 +25,7 @@ class ArchiesBlockGame {
         this.Constants.labels.moveDown = "^"; // its flipped with css
         this.Constants.layout = {};
         this.Constants.layout.header = "header";
+        this.Constants.layout.headerGameOver = "header-game-over";
         this.Constants.layout.score = "score";
         this.Constants.layout.footer = "footer";
         this.Constants.layout.leftrightcontainer = "left-right-container";
@@ -65,14 +65,11 @@ class ArchiesBlockGame {
 
     reset() {
         this.clearTimer();
+        this.isGameOverFlag = false;
         this.count = 0;
-        this.score = 0;
         this.buildStartingGrid();
-        this.printGrid();
         this.setNewBlock();
-        this.printGrid();
-        this.drawGrid();
-        // this.startGame();
+        setTimeout(this.moveBlockDown, 0);
     }
 
     setNewBlock() {
@@ -82,92 +79,7 @@ class ArchiesBlockGame {
         this.grid[1] = placement[1];
         this.grid[2] = placement[2];
         this.grid[3] = placement[3];
-    }
-
-    startGame() {
-        this.interval = setInterval(() => {
-            // find head
-            const headLocation = this.findGridItemByValue(this.Constants.gridValues.head);
-            const newHeadLocation = this.calculateNewPosition(headLocation.row, headLocation.column);
-            const eggLocation = this.findGridItemByValue(this.Constants.gridValues.egg);
-            const bodyLocations = this.getBodyLocations();
-
-            if (eggLocation && newHeadLocation.row === eggLocation.row && newHeadLocation.column === eggLocation.column) {
-                // handle got egg
-                this.score++;
-                for (let i = 0; i < bodyLocations.length; i++) {
-                    const bodyLocation = bodyLocations[i];
-                    this.grid[bodyLocation.row][bodyLocation.column]++;
-                }
-                this.grid[newHeadLocation.row][newHeadLocation.column] = this.Constants.gridValues.head;
-                if (this.isGameWinner() === true) {
-                    // handle win
-                    this.clearTimer();
-                    setTimeout(() => {
-                        this.showPopup(this.popupWin, this.score);
-                    }, this.Constants.default.popupTimeout);
-                    this.winSounds.play();
-                } else {
-                    this.placeRandomEgg();
-                    this.eggSounds.play();
-                }
-            } else {
-                // handle movement
-                for (let i = 0; i < bodyLocations.length; i++) {
-                    const bodyLocation = bodyLocations[i];
-                    const isTail = i === bodyLocations.length - 1;
-                    if (isTail === false) {
-                        // handle body movement
-                        this.grid[bodyLocation.row][bodyLocation.column]++;
-                    } else {
-                        // handle tail
-                        this.grid[bodyLocation.row][bodyLocation.column] = this.Constants.gridValues.empty;
-                    }
-                }
-                if (!Number.isInteger(this.grid[newHeadLocation.row][newHeadLocation.column]) || this.grid[newHeadLocation.row][newHeadLocation.column] > 0) {
-                    // handle hitting border or self
-                    this.clearTimer();
-                    this.grid[newHeadLocation.row][newHeadLocation.column] = this.Constants.gridValues.collision;
-                    setTimeout(() => {
-                        this.showPopup(this.popupGameover, this.score);
-                    }, this.Constants.default.popupTimeout);
-                    this.gameOverSounds.play();
-                } else {
-                    // handle setting new head
-                    this.grid[newHeadLocation.row][newHeadLocation.column] = this.Constants.gridValues.head;
-                }
-            }
-            this.drawGrid();
-        }, this.Constants.default.timeout)
-    }
-
-    calculateNewPosition(row, column) {
-        const pos = {
-            row: row,
-            column: column
-        };
-        switch (this.direction) {
-            case this.Constants.directions.up:
-                pos.row = row - 1;
-                pos.column = column;
-                break;
-            case this.Constants.directions.down:
-                pos.row = row + 1;
-                pos.column = column;
-                break;
-            case this.Constants.directions.left:
-                pos.row = row;
-                pos.column = column - 1;
-                break;
-            case this.Constants.directions.right:
-                pos.row = row;
-                pos.column = column + 1;
-                break;
-            default:
-                console.log(`Invalid direction ${this.direction}`);
-                break;
-        }
-        return pos;
+        this.drawGrid();
     }
 
     drawGrid() {
@@ -275,7 +187,7 @@ class ArchiesBlockGame {
         scoreDiv.innerHTML = "Score:&nbsp;";
         const scoreSpan = document.createElement("span");
         scoreSpan.id = "score";
-        scoreSpan.innerText = "0";
+        scoreSpan.innerText = "0000";
         scoreDiv.appendChild(scoreSpan);
         this.container.appendChild(scoreDiv);
 
@@ -306,7 +218,7 @@ class ArchiesBlockGame {
         moveRightButton.onclick = () => { app.moveBlockRight(); };
         const downButton = document.createElement("button");
         downButton.innerText = this.Constants.labels.moveDown;
-        downButton.onclick = () => { console.log(this.Constants.labels.moveDown); };
+        downButton.onclick = () => { app.moveBlockDown(); };
         downButton.classList.add(this.Constants.layout.flip);
         const turnLeftRightDiv = document.createElement("div");
         turnLeftRightDiv.classList.add(this.Constants.layout.leftrightcontainer);
@@ -328,29 +240,13 @@ class ArchiesBlockGame {
         }
         this.container.style.gridTemplateAreas += `"${footerGridNameList.join(" ")}"`;
 
-        if (debug === true) {
-            this.container.onclick = (event) => {
-                if (event.target && event.target.classList) {
-                    event.target.classList.forEach(c => {
-                        if (c.indexOf("cell") === 0) {
-                            const row = parseInt(c.substring(c.indexOf("R") + 1, c.indexOf("C")));
-                            const column = parseInt(c.substring(c.indexOf("C") + 1));
-                            app.grid[row][column] = 99999;
-                            app.drawGrid();
-                        }
-                    });
-                }
-            }
-        }
-
-        // TODO: wire this up
         window.onkeydown = (event) => {
             switch (event.code) {
                 case "ArrowUp":
                     app.turnBlockRight();
                     break;
                 case "ArrowDown":
-                    console.log(event.code);
+                    app.moveBlockDown();
                     break;
                 case "ArrowLeft":
                     app.moveBlockLeft();
@@ -386,6 +282,19 @@ class ArchiesBlockGame {
 
     removeItemsFromGrid(items) {
         this.updateItems(items, this.Constants.gridValues.empty);
+    }
+
+    isGameOver() {
+        const invisibleTopItems = [];
+        for (let i = 0; i < this.Constants.default.nonVisibleRows; i++) {
+            for (let j = 0; j < this.Constants.default.columns; j++) {
+                invisibleTopItems.push({
+                    row: i,
+                    column: j
+                });
+            }
+        }
+        return this.isItemsEmpty(invisibleTopItems) === false;
     }
 
     isItemsEmpty(items) {
@@ -424,17 +333,19 @@ class ArchiesBlockGame {
         if (this.isItemsEmpty(moves) === true) {
             this.updateItems(moves, this.count);
             this.drawGrid();
-            this.printGrid();
+            return true;
         } else {
-            console.log("Cannot turn due to a blockage");
+            // console.log("Cannot turn due to a blockage");
             this.updateItems(blockPositions, this.count);
+            return false;
         }
     }
 
     turnBlockLeft() {
+        if (this.isGameOverFlag === true) {
+            return;
+        }
         const blockPositions = this.findGridItemsByValue(this.count);
-        this.printGrid();
-        console.log(blockPositions);
         switch (this.block.constructor) {
             case SquareBlock:
                 // do nothing
@@ -670,9 +581,10 @@ class ArchiesBlockGame {
     }
 
     turnBlockRight() {
+        if (this.isGameOverFlag === true) {
+            return;
+        }
         const blockPositions = this.findGridItemsByValue(this.count);
-        this.printGrid();
-        console.log(blockPositions);
         switch (this.block.constructor) {
             case SquareBlock:
                 // do nothing
@@ -1052,6 +964,9 @@ class ArchiesBlockGame {
     }
 
     moveBlockLeft() {
+        if (this.isGameOverFlag === true) {
+            return;
+        }
         const blockPositions = this.findGridItemsByValue(this.count);
         const moves = [];
         for (let i = 0; i < blockPositions.length; i++) {
@@ -1065,6 +980,9 @@ class ArchiesBlockGame {
     }
 
     moveBlockRight() {
+        if (this.isGameOverFlag === true) {
+            return;
+        }
         const blockPositions = this.findGridItemsByValue(this.count);
         const moves = [];
         for (let i = 0; i < blockPositions.length; i++) {
@@ -1075,6 +993,77 @@ class ArchiesBlockGame {
             });
         }
         this.attemptMove(blockPositions, moves);
+    }
+
+    moveBlockDown() {
+        const self = app;
+        if (self.isGameOver === true) {
+            return;
+        }
+        self.clearTimer();
+        self.interval = setTimeout(self.moveBlockDown, self.Constants.default.timeout);
+        const blockPositions = self.findGridItemsByValue(self.count);
+        const moves = [];
+        let atBottom = false;
+        for (let i = 0; i < blockPositions.length; i++) {
+            const pos = blockPositions[i];
+            const nextRow = pos.row + 1;
+            moves.push({
+                row: nextRow,
+                column: pos.column
+            });
+            if (nextRow === self.Constants.default.rows) {
+                atBottom = true;
+            }
+        }
+        if (atBottom === false) {
+            if (self.attemptMove(blockPositions, moves) === false) {
+                self.processTurn();
+            }
+        } else {
+            self.processTurn();
+        }
+    }
+
+    processTurn() {
+        let rowsWithLines = [];
+        for (let i = 0; i < this.Constants.default.rows; i++) {
+            let count = 0;
+            for (let j = 0; j < this.Constants.default.columns; j++) {
+                if (this.grid[i][j] !== this.Constants.gridValues.empty) {
+                    ++count;
+                }
+            }
+            if (count === this.Constants.default.columns) {
+                rowsWithLines.push(i);
+            }
+        }
+        for (let i = 0; i < rowsWithLines.length; i++) {
+            const row = rowsWithLines[i];
+            this.grid.splice(row, 1);
+            this.grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        }
+        if (rowsWithLines.length > 0) {
+            this.drawGrid();
+            const scoreElement = document.querySelector("#score");
+            let score = parseInt(scoreElement.innerText);
+            score = score + ((rowsWithLines.length * 10) * rowsWithLines.length);
+            scoreElement.innerText = (score + "").padStart(4, "0");
+            if (this.Constants.default.timeout > 100) {
+                --this.Constants.default.timeout;
+            }
+        }
+        if (this.isGameOver() === true) {
+            this.isGameOverFlag = true;
+            this.clearTimer();
+            const header = document.querySelector(`.${this.Constants.layout.header}`);
+            if (header) {
+                header.classList.remove(this.Constants.layout.header);
+                header.classList.add(this.Constants.layout.headerGameOver);
+            }
+        } else {
+            this.setNewBlock();
+        }
     }
 
     clearTimer() {

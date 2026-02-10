@@ -6,7 +6,7 @@ class AbstractBlockShape {
         if (colorSelector instanceof RandomItemSelector === false) {
             throw new Error("Invalid RandomItemSelector");
         }
-        this.color = colorSelector.getRandomItem();
+        this.colorSelector = colorSelector;
     }
 
     getColor() {
@@ -24,6 +24,7 @@ class SquareBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -39,6 +40,7 @@ class LineBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -54,6 +56,7 @@ class SBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -69,6 +72,7 @@ class ZBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -84,6 +88,7 @@ class LBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -99,6 +104,7 @@ class JBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, id, 0, 0, 0, 0, 0],
@@ -114,6 +120,7 @@ class TBlock extends AbstractBlockShape {
     }
 
     getPlacement(id) {
+        this.color = this.colorSelector.getRandomItem();
         return [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

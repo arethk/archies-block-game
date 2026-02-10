@@ -27,6 +27,21 @@ body {
     content: "Archie's Block Game";
 }
 
+.header-game-over {
+    display: flex;
+    font-size: 5.0vh;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    background-color: black;
+    color: red;
+}
+
+.header-game-over::after {
+    content: "Game Over";
+}
+
 .score {
     display: flex;
     font-size: 4.0vh;
