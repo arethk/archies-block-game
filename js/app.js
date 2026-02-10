@@ -1,3 +1,4 @@
+const debug = true;
 class ArchiesBlockGame {
     constructor(container) {
         // singelton
@@ -53,10 +54,10 @@ class ArchiesBlockGame {
             // new SquareBlock(colorSelector),
             // new LineBlock(colorSelector),
             // new SBlock(colorSelector),
-            // new ZBlock(colorSelector),
+            new ZBlock(colorSelector),
             // new LBlock(colorSelector),
             // new JBlock(colorSelector),
-            new TBlock(colorSelector)
+            // new TBlock(colorSelector)
         ], true);
         this.buildHTML();
         this.reset();
@@ -326,6 +327,21 @@ class ArchiesBlockGame {
             footerGridNameList.push(this.Constants.layout.footer);
         }
         this.container.style.gridTemplateAreas += `"${footerGridNameList.join(" ")}"`;
+
+        if (debug === true) {
+            this.container.onclick = (event) => {
+                if (event.target && event.target.classList) {
+                    event.target.classList.forEach(c => {
+                        if (c.indexOf("cell") === 0) {
+                            const row = parseInt(c.substring(c.indexOf("R") + 1, c.indexOf("C")));
+                            const column = parseInt(c.substring(c.indexOf("C") + 1));
+                            app.grid[row][column] = 99999;
+                            app.drawGrid();
+                        }
+                    });
+                }
+            }
+        }
 
         // TODO: wire this up
         window.onkeydown = (event) => {
