@@ -1,27 +1,55 @@
 .red {
-    background-color: red;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #FF2800;
 }
 
 .green {
-    background-color: green;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #1da335;
 }
 
 .blue {
-    background-color: blue;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #1a12ae;
 }
 
 .purple {
-    background-color: purple;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #a013a8;
 }
 
 .orange {
-    background-color: orange;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #ff9809;
 }
 
 .pink {
-    background-color: rgb(224, 98, 119);
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #ff0077;
 }
 
 .set-block {
-    background-color: grey;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 15%;
+    background: radial-gradient(circle at 35% 35%, #0000, 70%, #0005) #7a7473;
 }
