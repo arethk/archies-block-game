@@ -30,7 +30,6 @@ class ArchiesBlockGame {
         this.Constants.layout.footer = "footer";
         this.Constants.layout.leftrightcontainer = "left-right-container";
         this.Constants.layout.flip = "flip";
-        this.Constants.layout.hide = "hide";
         this.Constants.gridValues = {};
         this.Constants.gridValues.empty = 0;
         this.Constants.gridCssClass = {};
