@@ -4,6 +4,7 @@ body {
     background-color: white;
     color: black;
     font-family: sans-serif;
+    user-select: none;
     touch-action: manipulation;
 }
 
